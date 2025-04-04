@@ -1,6 +1,6 @@
 import express, { Application } from 'express';
 import cors from 'cors';
-import config from './app/config';
+import config from './app/configs';
 
 // Initialize the express application
 const app: Application = express();

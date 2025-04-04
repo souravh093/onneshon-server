@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id                      String                    @id @default(uuid()) @db.Uuid
+  name                    String
+  email                   String                    @unique
+  password                String
+  verified                Boolean                   @default(false)
+  profilePhoto            String?                   @db.Text
+  bio                     String?                   @db.Text
+  address                 String?                   @db.Text
+  phone                   String?                   @db.Text
+  nationalIdCard          String?                   @db.Text
+  nationalIdCardPhoto     String?                   @db.Text
+  status                  UserStatus                @default(ACTIVE)
+  role                    UserRole                  @default(USER)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  item                    Item[]
+  itemReport              ItemReport[]
+  conversationParticipant ConversationParticipant[]
+  message                 Message[]
+  feedback                Feedback[]
+}
+
+enum ItemType {
+  LOST
+  FOUND
+}
+
+enum ItemStatus {
+  OPEN
+  MATCHED
+  RETURNED
+  CLOSED
+  EXPIRED
+  REJECTED
+  PENDING
+}
+
+enum ItemContactPreference {
+  PHONE
+  EMAIL
+  IN_PERSON
+  IN_APP_CHAT
+}
+
+model ItemCategory {
+  id              String            @id @default(uuid()) @db.Uuid
+  name            String            @db.Text
+  itemSubCategory ItemSubCategory[]
+  item            Item[]
+}
+
+model ItemSubCategory {
+  id         String       @id @default(uuid()) @db.Uuid
+  name       String       @db.Text
+  category   ItemCategory @relation(fields: [categoryId], references: [id])
+  categoryId String       @db.Uuid
+  item       Item[]
+}
+
+model Item {
+  id                String                @id @default(uuid()) @db.Uuid
+  title             String                @db.Text
+  description       String                @db.Text
+  type              ItemType
+  location          String                @db.Text
+  status            ItemStatus            @default(OPEN)
+  category          ItemCategory          @relation(fields: [categoryId], references: [id])
+  categoryId        String                @db.Uuid
+  subCategory       ItemSubCategory       @relation(fields: [subCategoryId], references: [id])
+  subCategoryId     String                @db.Uuid
+  date              DateTime              @default(now())
+  time              String                @db.Text
+  reward            Boolean               @default(false)
+  rewardAmount      Int?                  @default(0)
+  contactPreference ItemContactPreference @default(PHONE)
+  contactInfo       String                @db.Text
+  user              User                  @relation(fields: [userId], references: [id])
+  userId            String                @db.Uuid
+  itemImage         ItemImage[]
+  itemReport        ItemReport[]
+  feedback          Feedback[]
+}
+
+model ItemImage {
+  id       String @id @default(uuid()) @db.Uuid
+  imageUrl String @db.Text
+  item     Item   @relation(fields: [itemId], references: [id])
+  itemId   String @db.Uuid
+}
+
+model ItemReport {
+  id           String   @id @default(uuid()) @db.Uuid
+  item         Item     @relation(fields: [itemId], references: [id])
+  itemId       String   @db.Uuid
+  reportedBy   User     @relation(fields: [reportedById], references: [id])
+  reportedById String   @db.Uuid
+  reason       String   @db.Text
+  date         DateTime @default(now())
+}
+
+model Conversation {
+  id                      String                    @id @default(uuid()) @db.Uuid
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  conversationParticipant ConversationParticipant[]
+  message                 Message[]
+}
+
+model ConversationParticipant {
+  id                   String       @id @default(uuid()) @db.Uuid
+  user                 User         @relation(fields: [userId], references: [id])
+  userId               String       @db.Uuid
+  conversation         Conversation @relation(fields: [conversationId], references: [id])
+  conversationId       String       @db.Uuid
+  hasSeenLatestMessage Boolean      @default(false)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model Message {
+  id             String       @id @default(uuid()) @db.Uuid
+  content        String       @db.Text
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String       @db.Uuid
+  sender         User         @relation(fields: [senderId], references: [id])
+  senderId       String       @db.Uuid
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Feedback {
+  id        String   @id @default(uuid()) @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.Uuid
+  rating    Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    String   @db.Uuid
+}
+
+

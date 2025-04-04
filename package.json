@@ -15,9 +15,11 @@
   "author": "Sourave Halder",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "prisma": "^6.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
