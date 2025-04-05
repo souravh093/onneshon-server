@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import config from './app/configs';
 import router from './app/routes';
+import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
+import notFoundErrorHandler from './app/middlewares/notFoundErrorHandler';
 
 // Initialize the express application
 const app: Application = express();
@@ -35,7 +37,13 @@ app.get('/', (req, res) => {
 });
 
 // Importing routes
-app.use("/api/v1", router);
+app.use('/api/v1', router);
+
+// Error handling middleware
+app.use(globalErrorHandler);
+
+// 404 Not Found middleware
+app.use(notFoundErrorHandler);
 
 // Running the server
 app.listen(config.PORT, () => {

@@ -1,6 +1,6 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 export type TModuleRoute = {
-    path: string;
-    route: Router
-}
+  path: string;
+  route: Router;
+};

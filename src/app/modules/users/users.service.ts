@@ -28,7 +28,6 @@ const createUserIntoDB = async (payload: User) => {
   return result;
 };
 
-
 export const UserServices = {
-    createUserIntoDB,
-}
+  createUserIntoDB,
+};

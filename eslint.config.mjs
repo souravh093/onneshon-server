@@ -19,16 +19,12 @@ export default [
       '@typescript-eslint': tseslint,
     },
     rules: {
-      ...js.configs.recommended.rules,
-      ...tseslint.configs.recommended.rules,
+
       'no-unused-expressions': 'error',
       'prefer-const': 'error',
       'no-console': 'warn',
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
-    },
-    globals: {
-      process: 'readonly',
     },
   },
 ];
